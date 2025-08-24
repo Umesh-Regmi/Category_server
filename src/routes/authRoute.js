@@ -5,11 +5,6 @@ import { uploader } from '../../middlewares/uploaderMiddleware.js'
 const upload = uploader()
 const router = express.Router()
 
-
-const loginMid = (req, res, next) => {
-    console.log("Loging route")
-    next()
-}
 router.post('/register',upload.single('profile_image') ,Register)
 router.get('/login', Login)
 

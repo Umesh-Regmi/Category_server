@@ -3,7 +3,7 @@ import { cloudinary_config } from "./config.js";
 
 cloudinary.config({
     api_key: cloudinary_config.api_key,
-    api_secret: cloudinary_config.api_secret,
+    api_secret: cloudinary_config.secret,
     cloud_name: cloudinary_config.cloud_name
 })
 

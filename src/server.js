@@ -4,11 +4,13 @@ import express from 'express'
 // importing routes
 import 'dotenv/config'
 import authRoute from './routes/authRoute.js'
-import userRoute from './routes/userRoute.js'
+// import userRoute from './routes/userRoute.js'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import { errorHanler } from '../middlewares/userHandler_middleware.js'
 import { mongodb_conn } from './config/mongodb_config.js'
+import categoryRoute from './routes/categoryRoute.js'
+import brandRoute from './routes/brandRoute.js'
 
 const port = process.env.PORT
 // const MONGO_URL = process.env.MONGODB_URL
@@ -45,7 +47,10 @@ app.get('/', (req, res) => {
 
 // using routes
 app.use('/api/auth', authRoute)
-app.use('/api/auth', userRoute)
+// app.use('/api/auth', userRoute)
+app.use('/api/category', categoryRoute)
+app.use('/api/brand',brandRoute )
+
 
 // path not found
 app.use((req, res, next) => {
