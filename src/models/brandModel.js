@@ -21,7 +21,7 @@ import mongoose  from "mongoose";
         type: String,
         required: [true, 'logo path is required']
     }
-}
+    }
 },{timestamps:true})
 const Brand = mongoose.model("brand", brandSchema)
 export default Brand

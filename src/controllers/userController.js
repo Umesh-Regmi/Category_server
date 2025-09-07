@@ -2,7 +2,6 @@ import CustomError from "../../middlewares/userHandler_middleware.js"
 import User from "../models/userModel.js"
 import { delete_file, upload_file } from "../utils/cloudinaryUtils.js"
 
-// get all user
 
 // get user by id
 
@@ -12,44 +11,80 @@ import { delete_file, upload_file } from "../utils/cloudinaryUtils.js"
 
 
 // get all users
-// export const getAlluser = async(req, res, next) => {
-//     const getAllUser = await User.find()
-//     res.status(201).json({
-//         message: 'Get all users',
-//         status: 'success',
-//         data: {}
-//     })
-//     next({
-//     message: error.message || "Something went wrong",
-//     status: 'error'
-//     })
-// }
+export const getAlluser = async(req, res, next) => {
+    try {
+        const user = await User.find()
+        res.status(200).json({
+            message: 'All users fetched successfully',
+            data: user,
+            status: 'success'
+        })
+    } catch (error) {
+        next(error)
+    }
+}
 
-// // get user by id
-// export const getUserById = async(req, res, next) => {
-//     // res.status(201).json({
-//     //     message: 'Get users by id',
-//     //     status: 'success',
-//     //     data: {}
-//     // })
-//     next({
-//     message: error.message || "Something went wrong",
-//     status: 'error'
-//     })
-// }
+// get user by id
+export const userById = async(req, res, next) => {
+    try {
+        const {id} = req.params
+        const getUserById = await User.findById(id)
+        if(!getUserById){
+            throw new CustomError('User not found', 404)
+        }
+        res.status(200).json({
+            message: 'User fetched successfully',
+            data: getUserById,
+            status: 'success'
+        })
 
-// // delete user
-// export const deleteUser = async(req, res, next) => {
-//     // res.status(201).json({
-//     //     message: 'Delete user',
-//     //     status: 'success',
-//     //     data: {}
-//     // })
-//     next({
-//     message: error.message || "Something went wrong",
-//     status: 'error'
-//     })
-// }
+    } catch (error) {
+        next(error)
+    }
+}
+
+// update user
+export const updateUser = async(req, res, next) => {
+    try {
+        const {id} = req.params
+        const {first_name, last_name, email, password, gender, role} = req.body
+        const file = req.file
+
+        // find and update user by id
+        const user = await User.findByIdAndUpdate(id,{first_name, last_name, email, password, gender, role},{new:true})
+        if(!user){
+            throw new CustomError('User not found', 404)
+        }
+        res.status(200).json({
+            message: 'User updated successfully',
+            data: user,
+            status: 'success'
+        })
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+// delete user
+export const deleteUser = async(req, res, next) => {
+    try {
+        const {id} = req.params
+        const remove = await User.findByIdAndDelete(id)
+        if(!remove){
+            throw new CustomError('User not deleted', 404)
+        }
+        res.status(200).json({
+            message: 'User deleted successfully',
+            data: remove,
+            status: 'success'
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+
 // update profile image
 export const update_profile = async(req, res) => {
     try {
@@ -73,7 +108,7 @@ export const update_profile = async(req, res) => {
                 path
             }
         }
-        // delete old image
+// delete old image
 if(user.profile_image){
     await delete_file(user.profile_image.public_id)
 }
