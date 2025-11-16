@@ -3,15 +3,30 @@ import Brand from "../models/brandModel.js";
 import Category from "../models/categoryModel.js";
 import Product from "../models/productModel.js";
 import { upload_file } from "../utils/cloudinaryUtils.js";
+import { get_pagination } from "../utils/paginationUtils.js";
 
 // get all products
 export const getAllProducts = async (req, res, next) => {
   try {
-    const product = await Product.find();
+    const { page, per_page } = req.query;
+    const limit = parseInt(per_page) || 10;
+    const current_page = parseInt(page) || 1;
+    const skip = (current_page - 1) * limit;
+    const product = await Product.find({})
+      .populate("category")
+      .populate("brand")
+      .limit(limit)
+      .skip(skip);
+
+    const total_documents = await Product.countDocuments({});
+
+    const pagination = get_pagination(total_documents, current_page, limit);
+
     res.status(200).json({
       message: "Products fetched successfully",
       data: product,
       status: "success",
+      pagination,
     });
   } catch (error) {
     next(error);
@@ -149,12 +164,23 @@ export const updateBrand = async (req, res, next) => {
 // get product by category id
 export const getProductByCategory = async (req, res, next) => {
   try {
+    const { page, per_page } = req.query;
+    const limit = parseInt(per_page) || 10;
+    const current_page = parseInt(page) || 1;
+    const skip = (current_page - 1) * limit;
+
     const { id } = req.params;
     const products = await Product.find({ category: id });
+
+    const total_documents = await Product.countDocuments({});
+
+    const pagination = get_pagination(total_documents, current_page, limit);
+
     res.status(201).json({
       message: "Product fetched",
       data: products,
       status: "success",
+      pagination,
     });
   } catch (error) {}
 };
@@ -162,12 +188,25 @@ export const getProductByCategory = async (req, res, next) => {
 // get featured products
 export const getFeatured = async (req, res, next) => {
   try {
-    const products = await Product.find({ is_featured: true });
+    const { page, per_page } = req.query;
+    const limit = parseInt(per_page) || 10;
+    const current_page = parseInt(page) || 1;
+    const skip = (current_page - 1) * limit;
+    const products = await Product.find({ is_featured: true })
+      .populate("category")
+      .populate("brand")
+      .limit(limit)
+      .skip(skip);
+
+    const total_documents = await Product.countDocuments({});
+
+    const pagination = get_pagination(total_documents, current_page, limit);
 
     res.status(201).json({
       message: "get featured",
       data: products,
       status: "success",
+      pagination,
     });
   } catch (error) {
     next(error);
@@ -175,14 +214,23 @@ export const getFeatured = async (req, res, next) => {
 };
 
 // get new arrival products
-export const getNewArrivals = async (req, res, next) => {
+export const getNewArrival = async (req, res, next) => {
   try {
+    const { page, per_page } = req.query;
+    const limit = parseInt(per_page) || 10;
+    const current_page = parseInt(page) || 1;
+    const skip = (current_page - 1) * limit;
     const products = await Product.find({ is_new_arrival: true });
+
+    const total_documents = await Product.countDocuments({});
+
+    const pagination = get_pagination(total_documents, current_page, limit);
 
     res.status(201).json({
       message: "new arrivals",
       data: products,
       status: "success",
+      pagination,
     });
   } catch (error) {
     next(error);

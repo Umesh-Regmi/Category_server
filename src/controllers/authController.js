@@ -20,7 +20,7 @@ export const Register = async (req, res, next) => {
     // register user
 
     // console.log(req.body);
-    // // get data from
+    // // get data from user
     const { email, password, first_name, last_name, phone, gender } = req.body;
     const image = req.file;
 
@@ -68,10 +68,7 @@ export const Register = async (req, res, next) => {
     //   message: error?.message || "something went wrong",
     //   status: "error",
     // });
-    next({
-      message: error.message || "Something went wrong",
-      status: "error",
-    });
+    next(error);
   }
 };
 
@@ -82,6 +79,7 @@ export const Login = async (req, res, next) => {
 
     //*   1. get email & password from req body
     const { email, password } = req.body;
+    console.log(req.body);
 
     //* 2. search users array to find user by email
 
@@ -91,7 +89,7 @@ export const Login = async (req, res, next) => {
     //* 3. if user do not exists throw error message
 
     if (!user) {
-      throw new Error("invalid email or password....");
+      throw new Error("invalid email or password.....");
     }
 
     //* 4. compare password
@@ -116,11 +114,12 @@ export const Login = async (req, res, next) => {
       first_name: user.first_name,
       last_name: user.last_name,
       email: user.email,
+      role: user.role,
     });
 
     res
       .cookie("access_token", access_token, {
-        secure: process.env.NODE_ENV ? false : true,
+        secure: process.env.NODE_ENV === "development" ? false : true,
         sameSite: "none",
         httpOnly: true,
         maxAge: Number(process.env.COOKIE_EXPIRES_IN || 7) * 24 * 60 * 60 * 100,
@@ -182,8 +181,8 @@ export const changePassword = async () => {
 export const Logout = async (req, res, next) => {
   try {
     res
-      .cookie("access_token", access_token, {
-        secure: process.env.NODE_ENV ? false : true,
+      .clearCookie("access_token", {
+        secure: process.env.NODE_ENV === "development" ? false : true,
         sameSite: "none",
         httpOnly: true,
       })
@@ -198,7 +197,7 @@ export const Logout = async (req, res, next) => {
   }
 };
 
-// *get profile
+// *get profile image
 export const me = async (req, res, next) => {
   const id = req.user._id;
   const user = await User.findById(id);

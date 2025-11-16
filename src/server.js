@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 // import userRoute from './routes/userRoute.js'
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import cors from "cors";
 import { errorHandler } from "../middlewares/userHandler_middleware.js";
 import { mongodb_conn } from "./config/mongodb_config.js";
 import categoryRoute from "./routes/categoryRoute.js";
@@ -30,7 +31,7 @@ const app = express();
 // variety
 // 1. app level 2. route level 3. error handler
 const authMiddleware = (req, res, next) => {
-  console.log("Middleware run");
+  console.log("Middleware run xa");
   next();
 };
 // connecting to database
@@ -41,6 +42,13 @@ app.use(cookieParser());
 app.use(authMiddleware);
 app.use("/uploads", express.static("uploads"));
 app.use(express.json({ limit: "10mb" }));
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
+
 //ping routes
 app.get("/", (req, res) => {
   res.status(200).json({

@@ -12,6 +12,7 @@ export const authenticate = (roles) => {
       }
       // verify token
       const decoded_data = decode_token(token);
+      console.log(decoded_data);
       if (!decoded_data) {
         throw new CustomError("Unauthorized, Access denied", 401);
       }
@@ -36,7 +37,7 @@ export const authenticate = (roles) => {
       // rolebased authorization[admin, user]
       if (roles && Array.isArray(roles) && !roles.includes(decoded_data.role)) {
         throw new CustomError(
-          "Forbidden, You can not aceess this resource",
+          "Forbidden, You can not aceess this resource..",
           403
         );
       }

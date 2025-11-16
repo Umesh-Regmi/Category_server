@@ -3,7 +3,7 @@ import { sendEmail } from "./emailUtils.js";
 
 export const sendAccountRegisteredEmail = async (user) => {
   try {
-    const subject = "🎉 Welcome to E-Commerce!";
+    const subject = "Welcome to E-Commerce!";
     const html = `
       <div style="font-family: Arial, sans-serif; padding:20px; background:#f9f9f9;">
         <div style="max-width:600px; margin:auto; background:#fff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); padding:20px;">
@@ -38,7 +38,6 @@ export const sendAccountRegisteredEmail = async (user) => {
     throw new CustomError("Failed to send account registered email", 500);
   }
 };
-
 
 // password changed
 export const passwordChangedEmail = async (user) => {
@@ -76,7 +75,5 @@ export const passwordChangedEmail = async (user) => {
     throw new CustomError("Failed to send password changed email", 500);
   }
 };
-
-
 
 // order placed
